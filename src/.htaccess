@@ -1,0 +1,3 @@
+<FilesMatch "\.(php|json|sqlitedb)$">
+    Deny from all
+</FilesMatch>
