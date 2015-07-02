@@ -1,0 +1,81 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+/* font-family: 'Open Sans', sans-serif; */
+
+body {
+	margin-bottom: 40px !important;
+}
+
+#dp-debug-bar {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 40px;
+	background-color: #EDEDED;
+	border-top: 1px solid #999;
+	border-bottom: 1px solid #999;
+	box-shadow: -1px -2px 3px #EDEDED;
+}
+
+#dp-debug-bar * {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 12px;
+}
+
+#dp-debug-bar > nav {
+	float: left;
+}
+
+#dp-debug-bar > nav > a {
+	background-color: transparent;
+	border-right: 1px solid #999;
+	display: inline-block;
+	padding-left: 5px;
+	padding-right: 8px;
+	color: #333;
+	text-decoration: none;
+}
+
+#dp-debug-bar > div {
+	float: right;
+}
+
+#dp-debug-bar > div > span {
+	border-left: 1px solid #999;
+	display: inline-block;
+	padding-left: 8px;
+	padding-right: 5px;
+}
+
+#dp-debug-bar > div, #dp-debug-bar > nav {
+	line-height: 40px;
+}
+
+#dp-debug-bar.dp-open {
+	bottom: 300px;
+}
+
+#dp-debug-bar-box {
+	position: fixed;
+	height: 300px;
+	bottom: -300px;
+	left: 0;
+	width: 100%;
+	background-color: #FEFEFE;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+#dp-debug-bar-box.dp-open {
+	bottom: 0;
+}
+
+.dp-debug-bar-box-item {
+	display: none;
+	margin: 10px;
+}
+
+#dp-debug-bar-phpinfo table {
+	width: 100%;
+}
