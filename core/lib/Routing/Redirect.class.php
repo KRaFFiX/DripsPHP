@@ -99,9 +99,6 @@ class Redirect
         }
 
         $docRoot = Request::getDocRoot();
-        if($docRoot != "/"){
-            $docRoot = "/".$docRoot;
-        }
         $url = $docRoot.$url;
 
         return $url;
