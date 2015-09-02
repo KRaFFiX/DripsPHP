@@ -31,7 +31,7 @@ abstract class Dispatcher
      */
     public static function on($event, \Closure $callback)
     {
-        self::$events[$event][] = $callback;
+        static::$events[$event][] = $callback;
     }
 
     /**
@@ -53,9 +53,9 @@ abstract class Dispatcher
     protected static function call($event, $args = array())
     {
         // if someone expects the event
-        if (array_key_exists($event, self::$events)) {
+        if (array_key_exists($event, static::$events)) {
             // perform all functions that have registered for this event
-            foreach (self::$events[$event] as $callback) {
+            foreach (static::$events[$event] as $callback) {
                 // if is an array then
                 if (is_array($args)) {
                     // values of the array are given as individual parameters

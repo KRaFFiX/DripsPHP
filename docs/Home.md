@@ -6,40 +6,40 @@ Wenn Sie Drips zum ersten Mal verwenden, lesen sie die folgenden Kapitel, bitte 
 
 ### Grundlagen
 
- - [Einführung](introduction.md)
-    - [Aufbau und Grundstruktur](structure.md)
-    - [ClassLoader](classloader.md)
- - [Konfiguration](config.md)
- - [CLI](cli.md)
- - [Packages](packages.md)
-    - [Routing](routing.md)
-    - [Redirect](redirect.md)
-    - [Model-View-Controller](mvc.md)
-    - [Templates](templates.md)
-    - [HTML-Dokumente](htmldoc.md)
- - [Datenbank-Zugriff](database.md)
- - [Filesystem](filesystem.md)
- - [Formulare](forms.md)
- - [Validators](validators.md)
+ - [Einführung](introduction)
+    - [Aufbau und Grundstruktur](structure)
+    - [ClassLoader](classloader)
+ - [Konfiguration](config)
+ - [CLI](cli)
+ - [Packages](packages)
+    - [Routing](routing)
+    - [Redirect](redirect)
+    - [Model-View-Controller](mvc)
+    - [Templates](templates)
+    - [HTML-Dokumente](htmldoc)
+ - [Datenbank-Zugriff](database)
+ - [Filesystem](filesystem)
+ - [Formulare](forms)
+ - [Validators](validators)
 
 ### Security
 
- - [Hashing](hashing.md)
- - [Authentifizierung](auth.md)
+ - [Hashing](hashing)
+ - [Authentifizierung](auth)
 
 ### Debugging
 
- - [Debug-Utils](debug.md)
- - [Testing](testing.md)
+ - [Debug-Utils](debug)
+ - [Testing](testing)
 
 ### Sonstiges
 
- - [Mailer](mailer.md)
- - [Compiler](compiler.md)
- - [Caching](caching.md)
- - [Logging](log.md)
- - [Mehrsprachigkeit](multilang.md)
- - [HTTP-Requests](requests.md)
- - [Converter](converter.md)
- - [Plugin-System](plugin.md)
- - [Uploads](uploads.md)
+ - [Mailer](mailer)
+ - [Compiler](compiler)
+ - [Caching](caching)
+ - [Logging](log)
+ - [Mehrsprachigkeit](multilang)
+ - [HTTP-Requests](requests)
+ - [Converter](converter)
+ - [Plugin-System](plugin)
+ - [Uploads](uploads)

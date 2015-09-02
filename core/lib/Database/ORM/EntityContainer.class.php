@@ -352,6 +352,59 @@ class EntityContainer implements Iterator, ArrayAccess
     }
 
     /**
+     * creates a paginator object for creating a pagination
+     *
+     * @param int $items_per_page
+     * @param int $current_page
+     * @param Filter $filter
+     * @return Paginator
+     */
+    public static function paginate($items_per_page, $current_page, Filter $filter = null)
+    {
+        $total = static::count($filter);
+
+        $paginator = new Paginator($total);
+        $paginator->setMaxItems($items_per_page);
+        $paginator->setCurrentPage($current_page);
+
+        if($filter == null){
+            $filter = new Filter();
+        }
+        $filter->limit($paginator->getFrom(), $paginator->getTo());
+        $paginator->setItems(static::getAll($filter)->toArray());
+
+        return $paginator;
+    }
+
+    /**
+     * returns the number of results (records)
+     *
+     * @param Filter $filter
+     *
+     * @return int
+     */
+    public static function count(Filter $filter = null)
+    {
+        if(self::alreadyGetAll() && $filter == null)
+        {
+            $cache = self::getCache();
+            $items = $cache->getAll();;
+            return count($items);
+        }
+        if($filter != null)
+        {
+            $where = $filter->get();
+        }
+        $table = self::getTable();
+        if(isset($where)){
+            return self::getDBConnection()->count($table, $where);
+        } else {
+            return self::getDBConnection()->count($table);
+        }
+        return 0;
+    }
+
+    /**
      * returns if $primary is correct.
      *
      * @param array $primary
@@ -409,6 +462,16 @@ class EntityContainer implements Iterator, ArrayAccess
         $entity->resetModified();
 
         return $entity;
+    }
+
+    /**
+     * returns as EntityContainer as array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->entities;
     }
 
     /**

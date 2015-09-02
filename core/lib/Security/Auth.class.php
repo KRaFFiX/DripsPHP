@@ -43,7 +43,7 @@ class Auth
     public static function getCurrentUser()
     {
         if (static::already()) {
-            $container = static::$entityContainer;
+            $container = (new Path(static::$entityContainer))->getClass();
 
             return $container::get($_SESSION[static::$authName]);
         }
@@ -118,7 +118,7 @@ class Auth
         $filter->where(array('AND' => $data));
         $filter->only(1);
         $results = $container::getAll($filter);
-        if (!empty($results)) {
+        if (isset($results[0])) {
             return implode('', $results[0]->getPrimaryKey());
         }
 

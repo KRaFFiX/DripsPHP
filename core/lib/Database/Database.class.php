@@ -127,8 +127,8 @@ class Database extends Medoo
      */
     public function connect()
     {
-        $this->connected = true;
         parent::__construct();
+        $this->connected = true;
     }
 
     /**

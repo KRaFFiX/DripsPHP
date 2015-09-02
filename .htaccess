@@ -1,6 +1,7 @@
 <IfModule mod_rewrite.c>
     SetEnv HTTP_MOD_REWRITE On
     RewriteEngine On
+    RewriteRule ^assets/([a-zA-Z0-9_-]+)/(.*)$ src/$1/assets/$2 [L]
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ index.php?__route__=$1 [QSA]

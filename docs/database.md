@@ -14,7 +14,7 @@ Um das ORM-System von Drips verwenden zu können müssen zunächst das sogenannt
 
 > Das Beispiel demonstriert eine Benutzer-Tabelle. Zuerst wird der Name des Entities festgelegt, dieser ist gleichzeitig der Klassen-Name des Entities. Weiters wird eine Tabelle festgelegt, welche dem Tabellen-Namen der Datenbank entspricht um das Objekt mit der Datenbank verknüpfen zu können. Außerdem wird der Name des Containers festgelegt.
 
-```json
+``` json
 {
     "name": "user",
     "table": "user",
@@ -44,25 +44,28 @@ Um das ORM-System von Drips verwenden zu können müssen zunächst das sogenannt
 Bei einem Attribut muss in erster Linie ein Name festgelegt werden, welcher dem der Tabellen-Spalte entsprechen muss. Mit `type` kann der Datentyp des Attributes festgelegt werden.
 
 **Datentypen:**
- - `int` - ganzzahlige Werte
- - `text` - einfacher String
- - `string` - genau wie text (dient nur als Alias)
- - `float` - Gleitkomma Werte
- - `boolean` - 0 oder 1
+
+- `int` - ganzzahlige Werte
+- `text` - einfacher String
+- `string` - genau wie text (dient nur als Alias)
+- `float` - Gleitkomma Werte
+- `boolean` - 0 oder 1
 
 Neben dem Datentyp können auch `options` spezifiert werden.
 
 **Options:**
- - `primary` - Primärschlüssel
- - `auto` - Auto_Increment (automatischer Zähler)
- - `not_null` - Wert darf nicht *null* sein
+
+- `primary` - Primärschlüssel
+- `auto` - Auto_Increment (automatischer Zähler)
+- `not_null` - Wert darf nicht *null* sein
 
 Es können auch Standardwerte mittels `default` festgelegt werden. Als Standardwert kann auch ein definierter Platzhalter verwendet werden.
 
 **Platzhalter:**
- - `{date}` - liefert das aktuelle Datum
- - `{time}` - liefert die aktuelle Uhrzeit
- - `{datetime}` - liefert Zeit und Datum
+
+- `{date}` - liefert das aktuelle Datum
+- `{time}` - liefert die aktuelle Uhrzeit
+- `{datetime}` - liefert Zeit und Datum
 
 Außerdem kann eine Länge angegeben werden (max. Zeichenlänge) mit `length`.
 
@@ -72,7 +75,7 @@ Außerdem können einem Attribut Validators zugewiesen werden.
 
 ### Beispiel
 
-```json
+``` json
 "validators": {
     "required": "",
     "maxlength": "30"
@@ -81,7 +84,7 @@ Außerdem können einem Attribut Validators zugewiesen werden.
 
 Anhand der fertigen JSON-Datei kann mit folgendem CLI-Kommando ein Entity sowie ein Entity-Container generiert werden.
 
-```
+``` 
 php drips create:Entity pfad/zur/json-datei.json
 ```
 
@@ -90,6 +93,38 @@ Anschließend werden die beiden PHP-Klassen im gleichen Verzeichnis, in dem sich
 Die Entity-Klasse verfügt grundsätzlich nur über Getter und Setter. Wobei die Werte nur gesetzt werden können, wenn Sie den Angaben in der JSON-Datei entsprechen.
 
 Möchte man das Entity beispielsweise in die Datenbank einfügen, muss das Entity-Objekt entsprechend über den Entity-Container eingefügt werden.
+
+## Pagination
+
+Außerdem kann anhand eines EntityContainers bzw. mithilfe des ORM-Systems recht simpel eine Pagination generiert werden.
+
+**Beispiel:** *Auflistung von Benutzern aufgeteilt auf mehrere Seiten (Controller-Funktion):*
+
+``` php
+public function listUsers($page = 1)
+{
+  $paginator = CMSUsers::paginate(25, $page);
+  $users = '';
+
+  foreach ($paginator->getItems() as $user) {
+  $view = new View();
+  $view->assign('user', $user);
+  $view->assign('editLink', Redirect::link('drips-cms-edit-user', ['id' => $user->getId()]));
+  $view->assign('deleteLink', Redirect::link('drips-cms-delete-user', ['id' => $user->getId()]));
+  $users .= $view->make('cms.views.users.user');
+  }
+
+  $this->view->assign('user_list', $users);
+  $this->view->assign('prevBtn', $paginator->getPrevBtn(new Button(['name' => 'prevBtn', 'value' => App::$dictionary['users']['prev'], 'class' => 'btn default']))->__toString());
+  $this->view->assign('nextBtn', $paginator->getNextBtn(new Button(['name' => 'nextBtn', 'value' => App::$dictionary['users']['next'], 'class' => 'btn default', 'style' => 'float: right;']))->__toString());
+
+  foreach ($paginator->getNumberBtns(new Button(['class' => 'btn default'])) as $btn) {
+  $this->view->assign('numberBtns', $btn->__toString(), false);
+  }
+
+  return $this->view->make('cms.views.users.users');
+}
+```
 
 ## Kompatibilität
 

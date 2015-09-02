@@ -57,6 +57,10 @@ class Redirect
             }
             $url = preg_replace('/\/\{\w{1,}\}/', '', $url);
 
+            $docRoot = Request::getDocRoot();
+            if($docRoot != "/"){
+                return self::toURL("/".$docRoot.trim($url, "/"), $redirect);
+            }
             return self::toURL($url, $redirect);
         }
     }
@@ -73,4 +77,42 @@ class Redirect
     {
         return self::toRoute($name, $args, false);
     }
+
+    /**
+     * returns the full path to an asset.
+     *
+     * @param $name
+     *
+     * @return string
+     */
+    public static function asset($name, $package = "", $realPath = false)
+    {
+        if($package == "" && Request::$currentRoute !== null) {
+            $callbacks = RequestHandler::getRoute(Request::$currentRoute)['route']->getCallbacks();
+            $package = array_filter(explode('.', $callbacks[0]))[0];
+        }
+
+        if($realPath) {
+            $url = 'src/'.$package.'/assets/'.$name;
+        } else {
+            $url = 'assets/'.$package.'/'.$name;
+        }
+
+        $docRoot = Request::getDocRoot();
+        if($docRoot != "/"){
+            $docRoot = "/".$docRoot;
+        }
+        $url = $docRoot.$url;
+
+        return $url;
+    }
+
+    /**
+     * Reloads the current page
+     */
+    public static function reload()
+    {
+        Redirect::toURL($_SERVER["REQUEST_URI"]);
+    }
+
 }

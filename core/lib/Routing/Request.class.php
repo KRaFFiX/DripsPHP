@@ -74,6 +74,23 @@ abstract class Request
      */
     public static function current($routename)
     {
-        return self::$currentRoute->getName() == $routename;
+        return isset(self::$currentRoute) && self::$currentRoute->getName() == $routename;
+    }
+
+    /**
+     * does exactly the same then current, but you can use an array for check
+     *
+     * @param array $routenames
+     *
+     * @return bool
+     */
+    public static function current_in(array $routenames)
+    {
+        foreach($routenames as $name){
+            if(self::current($name)){
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -11,8 +11,9 @@ use DripsPHP\Config\Config;
 use DripsPHP\Debug\ExceptionHandler;
 use DripsPHP\ClassLoader\Path;
 use DripsPHP\ClassLoader\ClassLoader;
-use DripsPHP\HTML\Form;
+use DripsPHP\Form\Form;
 use Exception;
+use DripsPHP\MVC\ViewPlugins\Blocks;
 
 /**
  * Class View.
@@ -26,6 +27,7 @@ class View
     protected $plugindir = 'ViewPlugins';
     protected $template = '';
     protected $evalDir = 'core/tmp/';
+    protected $path;
     protected static $generated = 0;
 
     public function __construct()
@@ -41,16 +43,32 @@ class View
      * @param $key
      * @param $value
      */
-    public function assign($key, $value)
+    public function assign($key, $value, $overwrite = true)
     {
         if (is_object($value)) {
             $this->objs[$key] = $value;
-            if ($value instanceof Form) {
-                $this->assign($value->getName(), $value->toArray());
+            if($value instanceof Form){
+                $this->assign($key, $value->toArray());
             }
         } else {
-            $this->vars[$key] = $value;
+            if(!$overwrite && isset($this->vars[$key])){
+                $this->vars[$key] .= $value;
+            } else {
+                $this->vars[$key] = $value;
+            }
         }
+    }
+
+    /**
+     * returns if $key is assigned
+     *
+     * @param $key
+     *
+     * @return boolean
+     */
+    public function has($key)
+    {
+        return array_key_exists($key, $this->vars) || array_key_exists($key, $this->objs);
     }
 
     /**
@@ -101,7 +119,7 @@ class View
 
     /**
      * replacing the assigned vars in the template
-     * Syntax: {{ var }}.
+     * Syntax: {{{ var }}} or {{{ var.exists() }}}.
      */
     protected function replaceVars()
     {
@@ -109,6 +127,8 @@ class View
         // replace $vars array
         $this->recursiveArrayWalk('', $this->vars);
         // Replace non-declared ones {{{ *** }}} and {{{***}}}
+        $this->template = preg_replace('/\{\{\{ \w{1,}\.exists\(\) \}\}\}/', 'false', $this->template);
+        $this->template = preg_replace('/\{\{\{\w{1,}\.exists\(\)\}\}\}/', 'false', $this->template);
         $this->template = preg_replace('/\{\{\{ \w{1,} \}\}\}/', '', $this->template);
         $this->template = preg_replace('/\{\{\{\w{1,}\}\}\}/', '', $this->template);
     }
@@ -132,6 +152,9 @@ class View
                 // replace single value / no array
                 $this->template = str_replace('{{{ '.$useKey.' }}}', $value, $this->template);
                 $this->template = str_replace('{{{'.$useKey.'}}}', $value, $this->template);
+                // replace exists
+                $this->template = str_replace('{{{ '.$useKey.'.exists() }}}', "true", $this->template);
+                $this->template = str_replace('{{{'.$useKey.'.exists()}}}', "true", $this->template);
             } else {
                 // recursive array walk
                 $this->recursiveArrayWalk($useKey, $value);
@@ -158,6 +181,7 @@ class View
      */
     protected function compile($template)
     {
+        $this->path = $template;
         // does the plugin directory exist?
         $this->plugindir = 'core/lib/MVC/'.$this->plugindir.'/';
         if (is_dir($this->plugindir)) {
@@ -174,12 +198,32 @@ class View
             $plugin = new $class();
 
             if ($plugin instanceof IViewPlugin) {
-                $this->template = $plugin->compile($this->template, $template);
+                $this->template = $plugin->compile($this);
             }
         }
-        if (self::$generated == 1 && class_exists('\\DripsPHP\\MVC\\ViewPlugins\\Blocks')) {
-            $this->template = \DripsPHP\MVC\ViewPlugins\Blocks::removeWrong($this->template);
-        }
+        #if (self::$generated == 1 && class_exists('\\DripsPHP\\MVC\\ViewPlugins\\Blocks')) {
+            #$this->template = Blocks::removeWrong($this->template);
+        #}
+    }
+
+    /**
+     * sets the template
+     *
+     * @param $template
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+    }
+
+    /**
+     * returns the template
+     *
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
     }
 
     /**

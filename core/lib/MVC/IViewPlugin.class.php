@@ -9,5 +9,5 @@ namespace DripsPHP\MVC;
 
 interface IViewPlugin
 {
-    public function compile($template, $name);
+    public function compile(View $view);
 }

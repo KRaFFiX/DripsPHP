@@ -20,6 +20,7 @@ class Blocks implements IViewPlugin
     protected $template;
     protected $extends = array();
     protected $blocks = array();
+    protected $view;
 
     /**
      * returns the compiled template.
@@ -28,9 +29,10 @@ class Blocks implements IViewPlugin
      *
      * @return mixed
      */
-    public function compile($template, $name)
+    public function compile(View $view)
     {
-        $this->template = $template;
+        $this->template = $view->getTemplate();
+        $this->view = $view;
         // has extends?
         if ($this->findExtends()) {
             // get extends template
@@ -54,6 +56,8 @@ class Blocks implements IViewPlugin
         $matches = array();
         // Syntax: <!-- @EXTENDS(your.views.template) -->
         preg_match('/<!-- @EXTENDS\((.*)\) -->/i', $this->template, $matches, PREG_OFFSET_CAPTURE);
+        //preg_match('/<!-- @EXTENDS\([^\)]+)*\) -->/i', $this->template, $matches, PREG_OFFSET_CAPTURE);
+
         if (!empty($matches)) {
             $startPos = $matches[0][1];
             $extendView = $matches[1][0];
@@ -76,7 +80,7 @@ class Blocks implements IViewPlugin
      */
     public function getTemplate($tpl)
     {
-        $extendsView = new View();
+        $extendsView = clone $this->view;
 
         return $extendsView->make($tpl);
     }
@@ -95,6 +99,7 @@ class Blocks implements IViewPlugin
         $sectionMatches = array();
         // Syntax: <!-- @SECTION(name) -->
         preg_match_all('/<!-- @SECTION\((.*)\) -->/i', $src, $sectionMatches, PREG_OFFSET_CAPTURE);
+        //preg_match_all('/<!-- @SECTION\([^\)]+)*\) -->/i', $src, $sectionMatches, PREG_OFFSET_CAPTURE);
         if (!empty($sectionMatches)) {
             for ($i = 0; $i < count($sectionMatches[0]); $i++) {
                 $startPos = $sectionMatches[0][$i][1];
@@ -106,6 +111,7 @@ class Blocks implements IViewPlugin
         $endMatches = array();
         // Syntax: <!-- @END(name) -->
         preg_match_all('/<!-- @END\((.*)\) -->/i', $src, $endMatches, PREG_OFFSET_CAPTURE);
+        //preg_match_all('/<!-- @END\([^\)]+)*\) -->/i', $src, $endMatches, PREG_OFFSET_CAPTURE);
         if (!empty($endMatches)) {
             for ($i = 0; $i < count($endMatches[0]); $i++) {
                 $name = $endMatches[1][$i][0];
@@ -126,6 +132,7 @@ class Blocks implements IViewPlugin
      */
     public function compileTemplate()
     {
+        $this->blocks = array_reverse($this->blocks);
         $extendsTpl = $this->extends['tpl'];
         foreach ($this->blocks as $name => $block) {
             $extendsTpl = preg_replace('/<!-- @SECTION\('.$name.'\) -->(.+)<!-- @END\('.$name.'\) -->/is', $block['content'], $extendsTpl);
@@ -137,7 +144,9 @@ class Blocks implements IViewPlugin
     public static function removeWrong($template)
     {
         $template = preg_replace('/<!-- @SECTION\((.*)\) -->/i', '', $template);
+        //$template = preg_replace('/<!-- @SECTION\([^\)]+)*\) -->/i', '', $template);
         $template = preg_replace('/<!-- @END\((.*)\) -->/i', '', $template);
+        //$template = preg_replace('/<!-- @END\([^\)]+)*\) -->/i', '', $template);
 
         return $template;
     }

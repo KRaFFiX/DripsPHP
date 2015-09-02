@@ -1,0 +1,28 @@
+======[ v0.2 ]======
+ - Ab sofort kann in der Konfiguration ein Security-Token zur Verschlüsselung festgelegt werden
+ - Links-ViewPlugin hinzugefügt (zur automatischen Generierung von Links)
+ - Assets-Generieren + ViewPlugin (zur automatischen Generierung von Asset-Pfaden)
+ - Inputs entfernen nun automatisch HTML-Tags (kann deaktiviert werden)
+ - Setter und Getter für Inputs hinzugefügt
+ - View-Klasse kann Assigns überschreiben oder erweitern
+ - EntityContainer erweitert (Count-Methode, toArray-Methode)
+ - Pagination-Unterstützung hinzugefügt (ORM-Paginator)
+ - Request-Klasse erweitert um current_in Funktion (zur Überprüfung, ob dies, die aktuelle Seite ist)
+ - Redirect-Klasse erweitert um reload Funktion (ermöglicht einen Reload der aktuellen Seite)
+ - View-Klasse um has-Methode erweitert, um abzufragen ob eine Variable gesetzt wurde + exists() in Template-Engine integriert
+ - ViewPlugins geändert: ViewPlugins haben ab sofort nur mehr einen einzigen Parameter und zwar das View-Objekt selbst.
+ - Eingabefelder sind automatisch Pflichtfelder, können allerdings optional gemacht werden, indem ein optional-Attribut hinzugefügt wird.
+ - ExceptionHandler löst ein Event aus, sobald eine Exception geworfen wird
+ - Neues Formular-System eingeführt - altes Formular-System entfernt
+ - [BUG] Fehler behoben in ViewPlugin Blocks - verschachtelte Blöcke wurden nicht ordnungsgemäß generiert
+ - [BUG] Fehler im Exception-Handling behoben
+     - Exceptions wurden nicht ordnungsgemäß im Debug-Screen angezeigt, stattdessen wurde einfach die Ausführung des Scripts unterbrochen.
+ - [BUG] Fehler beim Login behoben (Auth)
+     - Der Login hat in Kombination mit verschiedenen Datenbank-Systemen nicht funktioniert
+     - `getCurrentUser()` hat nicht ordnungsgemäß funktioniert
+ - [BUG] Fehler behoben beim Redirecting (falscher Pfad)
+ - [BUG] PhpInfo wird standardmäßig deaktiviert, weil es die CSS-Styles überschreibt
+ - [BUG] Charset PHPMailer gesetzt (UTF-8)
+ - [BUG] Placeholder wurden nicht ordnungsgemäß ersetzt wenn von einem Template geerbt wurde
+ - [BUG] Fehlerhafte Eingabeprüfungen hinzugefügt (Redirect & Request)
+ - [BUF] Bugfix Dispatcher (self - static)

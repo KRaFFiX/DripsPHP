@@ -18,6 +18,7 @@ use DripsPHP\Mail\Phpmailer;
 use DripsPHP\Routing\Error404;
 use DripsPHP\Routing\RequestHandler;
 use DripsPHP\Routing\Response;
+use DripsPHP\Security\Hash;
 
 /**
  * Class App.
@@ -29,7 +30,7 @@ abstract class App extends Dispatcher
 {
     public static $configEnv = 'dev';
     public static $dictionary;
-    const VERSION = '0.1';
+    const VERSION = '0.2';
 
     /**
      * This is the main function for starting the framework. However, it is only
@@ -123,6 +124,7 @@ abstract class App extends Dispatcher
     {
         Config::$env = self::$configEnv;
         Config::init();
+        Hash::$salt = Config::get("security-token");
         // set timezone
         date_default_timezone_set(Config::get('date-timezone'));
         self::configDB();
@@ -170,6 +172,7 @@ abstract class App extends Dispatcher
     private static function configMail()
     {
         $mailer = new Phpmailer();
+        $mailer->CharSet = 'utf-8';
         if (Config::get('mail-smtp') == true) {
             $mailer->isSMTP();
             $mailer->Host = Config::get('mail-smtp-host');

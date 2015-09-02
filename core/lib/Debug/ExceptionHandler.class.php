@@ -7,12 +7,14 @@
  */
 namespace DripsPHP\Debug;
 
+use DripsPHP\API\Dispatcher;
+
 /**
  * Class ExceptionHandler.
  *
  * used for saving exception, for DripsPHP DebugPage
  */
-abstract class ExceptionHandler
+abstract class ExceptionHandler extends Dispatcher
 {
     /**
      * saves the exception.
@@ -22,6 +24,11 @@ abstract class ExceptionHandler
     public static function handle($exception)
     {
         // convert exception to error and handle it like an error
-        ErrorHandler::handle($exception->getCode(), $exception->getMessage(), $exception->getFile(), $exception->getLine(), serialize($exception), true);
+        $handle = true;
+        $result = self::call(get_class($exception), [$handle]);
+        $handle = $result[0];
+        if($handle){
+            ErrorHandler::handle($exception->getCode(), $exception->getMessage(), $exception->getFile(), $exception->getLine(), serialize($exception), true);
+        }
     }
 }

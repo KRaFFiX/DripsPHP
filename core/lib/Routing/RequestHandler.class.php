@@ -53,25 +53,19 @@ abstract class RequestHandler
             $params = array();
             //if route has allowed domain
             if ($route->isAllowedHost()) {
-                //if $url does not start with / let it start with /
-                if (substr($url, 0, 1) != '/') {
-                    $url = '/'.$url;
-                }
-                //if $routeUrl does not end with / let it end with /
                 $routeUrl = $route->getURL();
-                if (substr($routeUrl, strlen($routeUrl) - 1, 1) != '/') {
-                    $routeUrl .= '/';
-                }
+                $url = trim($url, "/");
+                $routeUrl = trim($routeUrl, "/");
                 $match = true;
                 $params = array();
-                if ($url != $route->getURL() || !preg_match('/\{/', $url)) {
+                if ($url != $routeUrl){
                     $match = false;
                     //split requested url
                     $requestParts = explode('/', $url);
                     //split url of route
                     $routeParts = explode('/', $routeUrl);
                     //does the route lengths match
-                    if (count($routeParts) >= count($requestParts)) {
+                    if (count($routeParts) >= count($requestParts) && strpos($routeUrl, "{") !== false) {
                         for ($i = 0; $i < count($requestParts); $i++) {
                             //if requested part != part of the route
                             if ($requestParts[$i] != $routeParts[$i]) {
@@ -85,6 +79,12 @@ abstract class RequestHandler
                                 }
                             } else {
                                 $match = true;
+                            }
+                        }
+                        if(count($routeParts) > count($requestParts))
+                        {
+                            if(strpos($routeParts[$i], "{") === false){
+                                $match = false;
                             }
                         }
                     } else {

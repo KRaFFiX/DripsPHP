@@ -12,7 +12,7 @@ Im Template werden Platzhalter mit folgender Syntax definiert: `{{{ platzhalter_
 
 Die Platzhalter können mit Werten versehen werden, indem man auf das entsprechende View-Objekt eine Zuweisung durchführt.
 
-```php
+``` php
 <?php
 // ...
 $myView = new View();
@@ -30,7 +30,7 @@ Auf die einzelnen Array-Elemente kann wie folgt zugegriffen werden: `{{{ name.ke
 
 Wird der View ein Objekt zugewiesen (z.B.: ein Form-Objekt) so können Methoden des Objekts (die keine Parameter benötigen!) direkt im Template mit folgender Syntax aufgerufen werden:
 
-```html
+``` html
 <!-- objname.method() -->
 ```
 
@@ -38,7 +38,7 @@ Wird der View ein Objekt zugewiesen (z.B.: ein Form-Objekt) so können Methoden 
 
 Für die Template-Engine können Plugins erstellt werden. Hierfür muss lediglich eine Klasse angelegt werden, welche das Interface `DripsPHP\MVC\IViewPlugin` implementiert. Anschließend muss die Klasse als ViewPlugin registriert werden. Dies ist wiederum auf 2 Arten möglich. Entweder man legt die Klasse im Verzeichnis `core\lib\MVC\ViewPlugins` mit der Endung `.class.php` ab oder man registriert sie manuell.
 
-```php
+``` php
 <?php
 // ...
 use namespace\myPlugin;
@@ -69,4 +69,15 @@ Wird ein Block nicht überschrieben, so wird der Wert des übergeordneten Templa
 Drips verfügt über ein System, wodurch mehrsprachige Webanwendungen erstellt werden können. Damit diese auch in Templates sinnvoll eingesetzt werden kann, gibt es die Möglichkeit diese direkt in das Template zu integrieren.
 
 Dabei wird lediglich folgende Syntax verwendet:
+
 `@TRANSLATE[key.key2.key3](param1, param2, param3)` die Parameter sind bei dieser Schreibweise optional.
+
+### Links
+
+Mithilfe des Links-ViewPlugins ist es möglich Links über das Template-System zu erzeugen. Dies ist mit einem `Redirect::link("...")` gleichzusetzen. Dafür wird folgende Syntax verwendet: `@LINK(name_der_route)`.
+
+### Assets
+
+Mithilfe des Assets-ViewPlugins ist es, ähnlich wie beim Links-Plugin möglich, über das Template-System die Asset-Pfade zu generieren. D.h. anstatt ein Asset (z.B.: CSS-Datei, Bild oder JavaScript) als direkten Pfad anzugeben kann dieser generiert werden über die ASSET-Funktion: `Redirect::asset("…")`. Dafür wird folgende Syntax verwendet: `@ASSET(pfad [, package])`.
+
+Soll beispielsweise ein Asset-Pfad für `src/my_package/assets/img/logo.png` erzeugt werden, so wird die Funktion wie folgt im Template aufgerufen: `@ASSET(img/logo.png)` wird das Template nicht vom aktuellen Package aufgerufen kann als 2. Parameter noch das entsprechende Package festgelegt werden.

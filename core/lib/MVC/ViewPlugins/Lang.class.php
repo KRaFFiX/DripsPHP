@@ -8,6 +8,7 @@
 namespace DripsPHP\MVC\ViewPlugins;
 
 use DripsPHP\MVC\IViewPlugin;
+use DripsPHP\MVC\View;
 
 /**
  * Class Lang.
@@ -26,9 +27,9 @@ class Lang implements IViewPlugin
      *
      * @return string
      */
-    public function compile($template, $name)
+    public function compile(View $view)
     {
-        $this->template = $template;
+        $this->template = $view->getTemplate();
         $this->replace();
 
         return $this->template;
@@ -41,7 +42,8 @@ class Lang implements IViewPlugin
      */
     protected function replace()
     {
-        preg_match_all('/@TRANSLATE\[(.*)\](\((.*)\))?/i', $this->template, $matches, PREG_OFFSET_CAPTURE);
+        //preg_match_all('/@TRANSLATE\[(.*)\](\((.*)\))?/i', $this->template, $matches, PREG_OFFSET_CAPTURE);
+        preg_match_all('/@TRANSLATE\[([^\]]+)*\](\(([^\]]+)*\))?/i', $this->template, $matches, PREG_OFFSET_CAPTURE);
         if (!empty($matches)) {
             for ($i = 0; $i < count($matches[0]); $i++) {
                 $replaceWith = '<?php printf(\\DripsPHP\\App::$dictionary';

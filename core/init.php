@@ -11,6 +11,7 @@ use DripsPHP\CLI\DripsCLI;
 use DripsPHP\Debug\ErrorHandler;
 use DripsPHP\Debug\ExceptionHandler;
 use DripsPHP\API\Shutdown;
+use DripsPHP\Debug\Page;
 
 // init session
 session_set_cookie_params(0, '/');
@@ -44,6 +45,14 @@ if (CLI) {
     set_exception_handler(function ($exception) {
         ExceptionHandler::handle($exception);
     });
+
     // run application
-    App::run();
+    try {
+        App::run();
+    } catch (Exception $e){
+        ExceptionHandler::handle($e);
+        if(Page::mustDebug()){
+            Page::create();
+        }
+    }
 }
