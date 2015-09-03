@@ -151,6 +151,7 @@ abstract class Form extends Dispatcher
                     if($this->multiple_errors == false){
                         return false;
                     }
+                    break;
                 }
             }
         }
