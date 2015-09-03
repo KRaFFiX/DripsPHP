@@ -30,6 +30,7 @@ abstract class Form extends Dispatcher
     private $method = "POST";
 
     private $finished = false;
+    protected $multiple_errors = false;
 
     /**
      * creates a new form instance.
@@ -140,17 +141,23 @@ abstract class Form extends Dispatcher
      */
     public function isValid()
     {
+        $valid = true;
         foreach($this->inputs as $name => $input){
             $results = $this->getValidatorResults($name);
             foreach($results as $result){
                 if(!$result){
                     static::call("invalid", array($name, $input));
-                    return false;
+                    $valid = false;
+                    if($this->multiple_errors == false){
+                        return false;
+                    }
                 }
             }
         }
-
-        return $this->validate();
+        if($valid){
+            return $this->validate();
+        }
+        return false;
     }
 
     /**
